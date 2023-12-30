@@ -6,6 +6,7 @@ from PIL import Image
 import numpy as np
 
 import canny
+import marrHildreth
 
 
 def main():
@@ -49,14 +50,20 @@ def main():
         im = im.convert("L")
         img = np.array(im)
 
-        res = canny.canny_detection(
+        res_canny = canny.canny_detection(
             img, options.sigma, options.weak_threshold, options.strong_threshold
         )
+        res_marr = marrHildreth.marr_hildreth_detection(img, options.sigma)
 
-        Image.fromarray(np.array(res, dtype=np.uint8), mode="L").save("canny.png")
+        Image.fromarray(np.array(res_canny, dtype=np.uint8), mode="L").save("canny.png")
+        Image.fromarray(np.array(res_marr, dtype=np.uint8), mode="L").save("marr-hildreth.png")
 
-        plt.imshow(res, cmap="gray")
-        plt.title("Canny Edge Detection")
+        plt.subplot(121)
+        plt.title("Canny")
+        plt.imshow(res_canny, cmap="gray")
+        plt.subplot(122)
+        plt.title("Marr-Hildreth")
+        plt.imshow(res_marr, cmap="gray")
         plt.show()
 
 
